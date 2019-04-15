@@ -11,8 +11,8 @@ import FoldingCell
 import EasyPeasy
 
 class DemoFoldingCell: FoldingCell {
-
-  override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+  
+  override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     
     containerView = createContainerView()
@@ -20,14 +20,14 @@ class DemoFoldingCell: FoldingCell {
     
     // super class method configure views
     commonInit()
- }
+  }
   
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
-
-  override func animationDuration(itemIndex: NSInteger, type: AnimationType) -> NSTimeInterval {
   
+  override func animationDuration(_ itemIndex: NSInteger, type: AnimationType) -> TimeInterval {
+    
     // durations count equal it itemCount
     let durations = [0.33, 0.26, 0.26] // timing animation for each view
     return durations[itemIndex]
@@ -35,27 +35,28 @@ class DemoFoldingCell: FoldingCell {
 }
 
 // MARK: Configure
-
 extension DemoFoldingCell {
   
   private func createForegroundView() -> RotatedView {
-    let foregroundView = Init(RotatedView(frame: .zero)) {
-      $0.backgroundColor = .redColor()
+    let foregroundView = Init(value: RotatedView(frame: .zero)) {
+      $0.backgroundColor = .red
       $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
     contentView.addSubview(foregroundView)
     
-    // add constraints 
-    foregroundView <- [
+    foregroundView.easy.layout([
       Height(75),
       Left(8),
-      Right(8),
-    ]
+      Right(8)
+    ])
     
     // add identifier
-    let top = (foregroundView <- [Top(8)]).first
+    
+    let top = foregroundView.easy.layout([Top(8)]).first
     top?.identifier = "ForegroundViewTop"
+    
+    foregroundViewTop = top
     
     foregroundView.layoutIfNeeded()
     
@@ -63,23 +64,25 @@ extension DemoFoldingCell {
   }
   
   private func createContainerView() -> UIView {
-    let containerView = Init(UIView(frame: .zero)) {
-      $0.backgroundColor = .greenColor()
+    let containerView = Init(value: UIView(frame: .zero)) {
+      $0.backgroundColor = .green
       $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
     contentView.addSubview(containerView)
     
     // add constraints
-    containerView <- [
+    containerView.easy.layout([
       Height(CGFloat(75 * itemCount)),
       Left(8),
-      Right(8),
-    ]
+      Right(8)
+    ])
     
     // add identifier
-    let top = (containerView <- [Top(8)]).first
+    let top = containerView.easy.layout([Top(8)]).first
     top?.identifier = "ContainerViewTop"
+    
+    containerViewTop = top
     
     containerView.layoutIfNeeded()
     
